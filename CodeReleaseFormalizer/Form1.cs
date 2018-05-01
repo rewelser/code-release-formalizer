@@ -23,12 +23,14 @@ namespace CodeReleaseFormalizer {
         GenResults gen;
         List<Tester> testers;
         bool currentlyMoving = false;
+        // Will not be "" if someone re-clicks to create a directory
+        string prevCreatedDir = "";
         string datetime = DateTime.Now.ToString("dd.MM.yy__HH.mm.ss");
 
         public Form1() {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-            ppm_tb.Select();
+            dept_tb.Select();
         }
 
         public void UpdateTesters() {
@@ -50,12 +52,12 @@ namespace CodeReleaseFormalizer {
                 Title = "(SIT) Select 'Panaya Exported Steps.xlsx'"
             };
             //ofd.StartPosition = FormStartPosition.CenterScreen;
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+            if (ofd.ShowDialog() == DialogResult.OK) {
                 groupbox_impl.Enabled = false;
                 // Assign the cursor in the Stream to the Form's Cursor property.
                 var filename = ofd.FileName;
                 filepath_SIT_tb.Text = filename;
-                gen_SIT = new GenResults(filepath_SIT_tb.Text, ppm_tb.Text, cai_tb.Text, datetime, this);
+                gen_SIT = new GenResults(filepath_SIT_tb.Text, dept_tb.Text, ppm_tb.Text, cai_tb.Text, datetime, this);
                 gen_SIT.Populate(false);
             }
         }
@@ -68,25 +70,31 @@ namespace CodeReleaseFormalizer {
                 Title = "(UAT) Select 'Panaya Exported Steps.xlsx'"
             };
             //ofd.StartPosition = FormStartPosition.CenterScreen;
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+            if (ofd.ShowDialog() == DialogResult.OK) {
                 groupbox_impl.Enabled = false;
                 // Assign the cursor in the Stream to the Form's Cursor property.
                 filepath_UAT_tb.Text = ofd.FileName;
-                
-                gen = new GenResults(filepath_UAT_tb.Text, ppm_tb.Text, cai_tb.Text, datetime, this);
+
+                gen = new GenResults(filepath_UAT_tb.Text, dept_tb.Text, ppm_tb.Text, cai_tb.Text, datetime, this);
                 gen.Populate(true);
             }
         }
 
         // Pose new directory to user to create
         public void Pose_UAT_dir(string filepath) {
-            pose_dir_tb.Enabled = true;
+            pose_dir_tb.Enabled = true; // welsertest: these all should be disabled once the directory is created
             gen_dir_btn.Enabled = true;
             pose_dir_tb.Text = filepath;
         }
 
         // Create directory from pose_dir_tb.Text
         private void Create_UAT_dir(object sender, EventArgs e) {
+
+            // If prev created directory exists, delete it
+            if (prevCreatedDir != "") {
+                (new FileInfo(prevCreatedDir)).Directory.Delete();
+            }
+
             (new FileInfo(pose_dir_tb.Text)).Directory.Create();
             tests_listbox.Items.Clear();
             testers_listbox.Items.Clear();
@@ -94,10 +102,17 @@ namespace CodeReleaseFormalizer {
             PopulateLists(testers);
             gen.SetFilePath(pose_dir_tb.Text);
             groupbox_impl.Enabled = true;
+            prevCreatedDir = pose_dir_tb.Text;
         }
 
         private void EnableBrowseBtn(object sender, EventArgs e) {
-            panaya_UAT_fp_browse_btn.Enabled = (ppm_tb.Text != "" && cai_tb.Text != "" && filepath_SIT_tb.Text != "");
+            if (!groupbox_impl.Enabled) {
+                panaya_UAT_fp_browse_btn.Enabled = (ppm_tb.Text.Trim() != "" && cai_tb.Text.Trim() != "" && filepath_SIT_tb.Text.Trim() != "" && dept_tb.Text.Trim() != "");
+                pose_dir_tb.Enabled = panaya_UAT_fp_browse_btn.Enabled;
+                gen_dir_btn.Enabled = panaya_UAT_fp_browse_btn.Enabled;
+            } else {
+                gen_btn.Enabled = (ppm_tb.Text.Trim() != "" && cai_tb.Text.Trim() != "" && filepath_SIT_tb.Text.Trim() != "" && dept_tb.Text.Trim() != "");
+            }
         }
 
         private void PopulateLists(List<Tester> testers) {
@@ -251,14 +266,16 @@ namespace CodeReleaseFormalizer {
         List<Tester> testers = new List<Tester>();
 
         string filepath;
+        string dept;
         string ppm_num;
         string cai_num;
         string release;
         string datetime;
         Form1 context;
 
-        public GenResults(string filepath, string ppm_num, string cai_num, string datetime, Form1 context) {
+        public GenResults(string filepath, string dept, string ppm_num, string cai_num, string datetime, Form1 context) {
             this.filepath = @filepath;
+            this.dept = dept;
             this.ppm_num = ppm_num;
             this.cai_num = cai_num;
             this.datetime = datetime;
@@ -314,6 +331,11 @@ namespace CodeReleaseFormalizer {
                             step_testers.Add(dt.Rows[i][53].ToString());
 
                             var tester = new Tester(dt.Rows[i][53].ToString());
+
+                            if (tester.GetTester().Trim() == "") {
+                                tester.RenameTester("[name missing]");
+                            }
+
                             if (i > 0) {
                                 if (i == 1) {
                                     tester.AddTestID(dt.Rows[i][0].ToString(), dt.Rows[i][2].ToString());
@@ -336,23 +358,23 @@ namespace CodeReleaseFormalizer {
                     }
 
                     if (isUAT) {
-                            release = Regex.Replace(dt.Rows[1][4].ToString(), "ecommerce", "", RegexOptions.IgnoreCase);
+                            release = Regex.Replace(dt.Rows[1][4].ToString(), dept, "", RegexOptions.IgnoreCase);
                         if (release.Contains(" >") || release.Contains(" -")) {
                             Regex r = new Regex(@"(.*?)((?=\s>)|(?=\s-))");
                             Match match = r.Match(release);
                             if (release.ToCharArray()[0] == ' ') {
-                                release = "eCommerce" + match.Value;
+                                release = dept + match.Value;
                             }
                             else {
-                                release = "eCommerce " + match.Value;
+                                release = dept + " " + match.Value;
                             }
                         }
                         else {
                             if (release.ToCharArray()[0] == ' ') {
-                                release = "eCommerce" + release;
+                                release = dept + release;
                             }
                             else {
-                                release = "eCommerce " + release;
+                                release = dept + " " + release;
                             }
                         }
 

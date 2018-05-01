@@ -61,6 +61,8 @@
             this.panaya_fp_SIT_browse_btn = new System.Windows.Forms.Button();
             this.pose_dir_tb = new System.Windows.Forms.TextBox();
             this.gen_dir_btn = new System.Windows.Forms.Button();
+            this.dept_tb_label = new System.Windows.Forms.Label();
+            this.dept_tb = new System.Windows.Forms.TextBox();
             this.groupbox_impl.SuspendLayout();
             this.moveTest_gb.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -70,10 +72,10 @@
             // panaya_UAT_fp_browse_btn
             // 
             this.panaya_UAT_fp_browse_btn.Enabled = false;
-            this.panaya_UAT_fp_browse_btn.Location = new System.Drawing.Point(641, 110);
+            this.panaya_UAT_fp_browse_btn.Location = new System.Drawing.Point(651, 152);
             this.panaya_UAT_fp_browse_btn.Name = "panaya_UAT_fp_browse_btn";
             this.panaya_UAT_fp_browse_btn.Size = new System.Drawing.Size(84, 28);
-            this.panaya_UAT_fp_browse_btn.TabIndex = 0;
+            this.panaya_UAT_fp_browse_btn.TabIndex = 12;
             this.panaya_UAT_fp_browse_btn.Text = "Browse...";
             this.panaya_UAT_fp_browse_btn.UseVisualStyleBackColor = true;
             this.panaya_UAT_fp_browse_btn.Click += new System.EventHandler(this.Browse_Click_UAT);
@@ -81,23 +83,23 @@
             // filepath_UAT_tb_label
             // 
             this.filepath_UAT_tb_label.AutoSize = true;
-            this.filepath_UAT_tb_label.Location = new System.Drawing.Point(20, 116);
+            this.filepath_UAT_tb_label.Location = new System.Drawing.Point(30, 158);
             this.filepath_UAT_tb_label.Name = "filepath_UAT_tb_label";
             this.filepath_UAT_tb_label.Size = new System.Drawing.Size(289, 17);
-            this.filepath_UAT_tb_label.TabIndex = 1;
+            this.filepath_UAT_tb_label.TabIndex = 10;
             this.filepath_UAT_tb_label.Text = "Select UAT File \'Panaya Exported Steps.xlsx\'";
             // 
             // filepath_UAT_tb
             // 
-            this.filepath_UAT_tb.Location = new System.Drawing.Point(315, 113);
+            this.filepath_UAT_tb.Location = new System.Drawing.Point(325, 155);
             this.filepath_UAT_tb.Name = "filepath_UAT_tb";
             this.filepath_UAT_tb.ReadOnly = true;
             this.filepath_UAT_tb.Size = new System.Drawing.Size(320, 22);
-            this.filepath_UAT_tb.TabIndex = 2;
+            this.filepath_UAT_tb.TabIndex = 11;
             // 
             // ppm_tb
             // 
-            this.ppm_tb.Location = new System.Drawing.Point(315, 29);
+            this.ppm_tb.Location = new System.Drawing.Point(325, 71);
             this.ppm_tb.Name = "ppm_tb";
             this.ppm_tb.Size = new System.Drawing.Size(320, 22);
             this.ppm_tb.TabIndex = 4;
@@ -106,7 +108,7 @@
             // ppm_tb_label
             // 
             this.ppm_tb_label.AutoSize = true;
-            this.ppm_tb_label.Location = new System.Drawing.Point(153, 32);
+            this.ppm_tb_label.Location = new System.Drawing.Point(163, 74);
             this.ppm_tb_label.Name = "ppm_tb_label";
             this.ppm_tb_label.Size = new System.Drawing.Size(156, 17);
             this.ppm_tb_label.TabIndex = 3;
@@ -114,7 +116,7 @@
             // 
             // cai_tb
             // 
-            this.cai_tb.Location = new System.Drawing.Point(315, 57);
+            this.cai_tb.Location = new System.Drawing.Point(325, 99);
             this.cai_tb.Name = "cai_tb";
             this.cai_tb.Size = new System.Drawing.Size(320, 22);
             this.cai_tb.TabIndex = 6;
@@ -123,7 +125,7 @@
             // cai_tb_label
             // 
             this.cai_tb_label.AutoSize = true;
-            this.cai_tb_label.Location = new System.Drawing.Point(134, 60);
+            this.cai_tb_label.Location = new System.Drawing.Point(144, 102);
             this.cai_tb_label.Name = "cai_tb_label";
             this.cai_tb_label.Size = new System.Drawing.Size(175, 17);
             this.cai_tb_label.TabIndex = 5;
@@ -131,6 +133,7 @@
             // 
             // groupbox_impl
             // 
+            this.groupbox_impl.CausesValidation = false;
             this.groupbox_impl.Controls.Add(this.gen_btn);
             this.groupbox_impl.Controls.Add(this.moveTest_gb);
             this.groupbox_impl.Controls.Add(this.toolStrip2);
@@ -141,7 +144,7 @@
             this.groupbox_impl.Controls.Add(this.testers_listbox);
             this.groupbox_impl.Enabled = false;
             this.groupbox_impl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupbox_impl.Location = new System.Drawing.Point(12, 219);
+            this.groupbox_impl.Location = new System.Drawing.Point(12, 245);
             this.groupbox_impl.Name = "groupbox_impl";
             this.groupbox_impl.Size = new System.Drawing.Size(769, 314);
             this.groupbox_impl.TabIndex = 8;
@@ -326,28 +329,28 @@
             // 
             // filepath_SIT_tb
             // 
-            this.filepath_SIT_tb.Location = new System.Drawing.Point(315, 85);
+            this.filepath_SIT_tb.Location = new System.Drawing.Point(325, 127);
             this.filepath_SIT_tb.Name = "filepath_SIT_tb";
             this.filepath_SIT_tb.ReadOnly = true;
             this.filepath_SIT_tb.Size = new System.Drawing.Size(320, 22);
-            this.filepath_SIT_tb.TabIndex = 10;
+            this.filepath_SIT_tb.TabIndex = 8;
             this.filepath_SIT_tb.TextChanged += new System.EventHandler(this.EnableBrowseBtn);
             // 
             // filepath_SIT_tb_label
             // 
             this.filepath_SIT_tb_label.AutoSize = true;
-            this.filepath_SIT_tb_label.Location = new System.Drawing.Point(27, 88);
+            this.filepath_SIT_tb_label.Location = new System.Drawing.Point(37, 130);
             this.filepath_SIT_tb_label.Name = "filepath_SIT_tb_label";
             this.filepath_SIT_tb_label.Size = new System.Drawing.Size(282, 17);
-            this.filepath_SIT_tb_label.TabIndex = 9;
+            this.filepath_SIT_tb_label.TabIndex = 7;
             this.filepath_SIT_tb_label.Text = "Select SIT File \'Panaya Exported Steps.xlsx\'";
             // 
             // panaya_fp_SIT_browse_btn
             // 
-            this.panaya_fp_SIT_browse_btn.Location = new System.Drawing.Point(641, 82);
+            this.panaya_fp_SIT_browse_btn.Location = new System.Drawing.Point(651, 124);
             this.panaya_fp_SIT_browse_btn.Name = "panaya_fp_SIT_browse_btn";
             this.panaya_fp_SIT_browse_btn.Size = new System.Drawing.Size(84, 28);
-            this.panaya_fp_SIT_browse_btn.TabIndex = 11;
+            this.panaya_fp_SIT_browse_btn.TabIndex = 9;
             this.panaya_fp_SIT_browse_btn.Text = "Browse...";
             this.panaya_fp_SIT_browse_btn.UseVisualStyleBackColor = true;
             this.panaya_fp_SIT_browse_btn.Click += new System.EventHandler(this.Browse_Click_SIT);
@@ -355,27 +358,46 @@
             // pose_dir_tb
             // 
             this.pose_dir_tb.Enabled = false;
-            this.pose_dir_tb.Location = new System.Drawing.Point(156, 168);
+            this.pose_dir_tb.Location = new System.Drawing.Point(161, 204);
             this.pose_dir_tb.Name = "pose_dir_tb";
             this.pose_dir_tb.Size = new System.Drawing.Size(320, 22);
-            this.pose_dir_tb.TabIndex = 12;
+            this.pose_dir_tb.TabIndex = 13;
             // 
             // gen_dir_btn
             // 
             this.gen_dir_btn.Enabled = false;
-            this.gen_dir_btn.Location = new System.Drawing.Point(482, 165);
+            this.gen_dir_btn.Location = new System.Drawing.Point(487, 201);
             this.gen_dir_btn.Name = "gen_dir_btn";
             this.gen_dir_btn.Size = new System.Drawing.Size(158, 28);
-            this.gen_dir_btn.TabIndex = 13;
+            this.gen_dir_btn.TabIndex = 14;
             this.gen_dir_btn.Text = "Create Directory";
             this.gen_dir_btn.UseVisualStyleBackColor = true;
             this.gen_dir_btn.Click += new System.EventHandler(this.Create_UAT_dir);
+            // 
+            // dept_tb_label
+            // 
+            this.dept_tb_label.AutoSize = true;
+            this.dept_tb_label.Location = new System.Drawing.Point(233, 46);
+            this.dept_tb_label.Name = "dept_tb_label";
+            this.dept_tb_label.Size = new System.Drawing.Size(86, 17);
+            this.dept_tb_label.TabIndex = 1;
+            this.dept_tb_label.Text = "Department:";
+            // 
+            // dept_tb
+            // 
+            this.dept_tb.Location = new System.Drawing.Point(325, 43);
+            this.dept_tb.Name = "dept_tb";
+            this.dept_tb.Size = new System.Drawing.Size(320, 22);
+            this.dept_tb.TabIndex = 2;
+            this.dept_tb.TextChanged += new System.EventHandler(this.EnableBrowseBtn);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(793, 545);
+            this.ClientSize = new System.Drawing.Size(793, 571);
+            this.Controls.Add(this.dept_tb_label);
+            this.Controls.Add(this.dept_tb);
             this.Controls.Add(this.gen_dir_btn);
             this.Controls.Add(this.pose_dir_tb);
             this.Controls.Add(this.panaya_fp_SIT_browse_btn);
@@ -430,6 +452,8 @@
         private System.Windows.Forms.ToolStripButton renameTester_btn;
         private System.Windows.Forms.TextBox pose_dir_tb;
         private System.Windows.Forms.Button gen_dir_btn;
+        private System.Windows.Forms.Label dept_tb_label;
+        private System.Windows.Forms.TextBox dept_tb;
     }
 }
 
