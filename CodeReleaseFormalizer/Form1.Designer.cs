@@ -60,9 +60,9 @@
             this.filepath_SIT_tb_label = new System.Windows.Forms.Label();
             this.panaya_fp_SIT_browse_btn = new System.Windows.Forms.Button();
             this.pose_dir_tb = new System.Windows.Forms.TextBox();
-            this.gen_dir_btn = new System.Windows.Forms.Button();
             this.dept_tb_label = new System.Windows.Forms.Label();
             this.dept_tb = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupbox_impl.SuspendLayout();
             this.moveTest_gb.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -358,21 +358,10 @@
             // pose_dir_tb
             // 
             this.pose_dir_tb.Enabled = false;
-            this.pose_dir_tb.Location = new System.Drawing.Point(161, 204);
+            this.pose_dir_tb.Location = new System.Drawing.Point(33, 208);
             this.pose_dir_tb.Name = "pose_dir_tb";
-            this.pose_dir_tb.Size = new System.Drawing.Size(320, 22);
+            this.pose_dir_tb.Size = new System.Drawing.Size(702, 22);
             this.pose_dir_tb.TabIndex = 13;
-            // 
-            // gen_dir_btn
-            // 
-            this.gen_dir_btn.Enabled = false;
-            this.gen_dir_btn.Location = new System.Drawing.Point(487, 201);
-            this.gen_dir_btn.Name = "gen_dir_btn";
-            this.gen_dir_btn.Size = new System.Drawing.Size(158, 28);
-            this.gen_dir_btn.TabIndex = 14;
-            this.gen_dir_btn.Text = "Create Directory";
-            this.gen_dir_btn.UseVisualStyleBackColor = true;
-            this.gen_dir_btn.Click += new System.EventHandler(this.Create_UAT_dir);
             // 
             // dept_tb_label
             // 
@@ -391,14 +380,23 @@
             this.dept_tb.TabIndex = 2;
             this.dept_tb.TextChanged += new System.EventHandler(this.EnableBrowseBtn);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(37, 188);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(122, 17);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Desired Directory:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(793, 571);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.dept_tb_label);
             this.Controls.Add(this.dept_tb);
-            this.Controls.Add(this.gen_dir_btn);
             this.Controls.Add(this.pose_dir_tb);
             this.Controls.Add(this.panaya_fp_SIT_browse_btn);
             this.Controls.Add(this.filepath_SIT_tb);
@@ -451,9 +449,9 @@
         private System.Windows.Forms.Button panaya_fp_SIT_browse_btn;
         private System.Windows.Forms.ToolStripButton renameTester_btn;
         private System.Windows.Forms.TextBox pose_dir_tb;
-        private System.Windows.Forms.Button gen_dir_btn;
         private System.Windows.Forms.Label dept_tb_label;
         private System.Windows.Forms.TextBox dept_tb;
+        private System.Windows.Forms.Label label3;
     }
 }
 

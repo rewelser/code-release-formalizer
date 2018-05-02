@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using ExcelDataReader;
-using OfficeOpenXml;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 using Xceed.Words.NET;
 
 namespace CodeReleaseFormalizer {
@@ -23,8 +16,6 @@ namespace CodeReleaseFormalizer {
         GenResults gen;
         List<Tester> testers;
         bool currentlyMoving = false;
-        // Will not be "" if someone re-clicks to create a directory
-        string prevCreatedDir = "";
         string datetime = DateTime.Now.ToString("dd.MM.yy__HH.mm.ss");
 
         public Form1() {
@@ -53,7 +44,6 @@ namespace CodeReleaseFormalizer {
             };
             //ofd.StartPosition = FormStartPosition.CenterScreen;
             if (ofd.ShowDialog() == DialogResult.OK) {
-                groupbox_impl.Enabled = false;
                 // Assign the cursor in the Stream to the Form's Cursor property.
                 var filename = ofd.FileName;
                 filepath_SIT_tb.Text = filename;
@@ -74,44 +64,37 @@ namespace CodeReleaseFormalizer {
                 groupbox_impl.Enabled = false;
                 // Assign the cursor in the Stream to the Form's Cursor property.
                 filepath_UAT_tb.Text = ofd.FileName;
-
-                gen = new GenResults(filepath_UAT_tb.Text, dept_tb.Text, ppm_tb.Text, cai_tb.Text, datetime, this);
+                
+                gen = new GenResults(filepath_UAT_tb.Text.Trim(), dept_tb.Text.Trim(), ppm_tb.Text.Trim(), cai_tb.Text.Trim(), datetime, this);
                 gen.Populate(true);
+                tests_listbox.Items.Clear();
+                testers_listbox.Items.Clear();
+                testers = gen.GetTesters();
+                PopulateLists(testers);
+                gen.SetFilePath(pose_dir_tb.Text);
+                groupbox_impl.Enabled = true;
             }
         }
 
         // Pose new directory to user to create
         public void Pose_UAT_dir(string filepath) {
-            pose_dir_tb.Enabled = true; // welsertest: these all should be disabled once the directory is created
-            gen_dir_btn.Enabled = true;
+            pose_dir_tb.Enabled = true;
             pose_dir_tb.Text = filepath;
-        }
-
-        // Create directory from pose_dir_tb.Text
-        private void Create_UAT_dir(object sender, EventArgs e) {
-
-            // If prev created directory exists, delete it
-            if (prevCreatedDir != "") {
-                (new FileInfo(prevCreatedDir)).Directory.Delete();
-            }
-
-            (new FileInfo(pose_dir_tb.Text)).Directory.Create();
-            tests_listbox.Items.Clear();
-            testers_listbox.Items.Clear();
-            testers = gen.GetTesters();
-            PopulateLists(testers);
-            gen.SetFilePath(pose_dir_tb.Text);
-            groupbox_impl.Enabled = true;
-            prevCreatedDir = pose_dir_tb.Text;
         }
 
         private void EnableBrowseBtn(object sender, EventArgs e) {
             if (!groupbox_impl.Enabled) {
                 panaya_UAT_fp_browse_btn.Enabled = (ppm_tb.Text.Trim() != "" && cai_tb.Text.Trim() != "" && filepath_SIT_tb.Text.Trim() != "" && dept_tb.Text.Trim() != "");
                 pose_dir_tb.Enabled = panaya_UAT_fp_browse_btn.Enabled;
-                gen_dir_btn.Enabled = panaya_UAT_fp_browse_btn.Enabled;
             } else {
                 gen_btn.Enabled = (ppm_tb.Text.Trim() != "" && cai_tb.Text.Trim() != "" && filepath_SIT_tb.Text.Trim() != "" && dept_tb.Text.Trim() != "");
+            }
+
+            if (gen != null && (ppm_tb.Text.Trim() != "" && cai_tb.Text.Trim() != "" && dept_tb.Text.Trim() != "")) {
+                gen.SetPPMnum(ppm_tb.Text.Trim());
+                gen.SetCAInum(cai_tb.Text.Trim());
+                gen.SetDept(dept_tb.Text.Trim());
+                gen.NameDirToPose(true);
             }
         }
 
@@ -200,8 +183,9 @@ namespace CodeReleaseFormalizer {
         }
 
         private void AddTest(object sender, EventArgs e) {
-            var form = new Form_addTest();
-            form.StartPosition = FormStartPosition.CenterScreen;
+            var form = new Form_addTest {
+                StartPosition = FormStartPosition.CenterScreen
+            };
             if (testers_listbox.SelectedIndex > -1) {
                 form.SetGen_SetForm1Ref_PopComboBox(this, gen, testers_listbox.SelectedItem.ToString());
             } else {
@@ -244,6 +228,7 @@ namespace CodeReleaseFormalizer {
         }
 
         private void GenDocs(object sender, EventArgs e) {
+            (new FileInfo(pose_dir_tb.Text)).Directory.Create();
             gen.CreateApprovalDocXs();
             gen_SIT.SetFilePath(gen.GetFilePath());
             gen_SIT.SetRelease(gen.GetRelease());
@@ -265,15 +250,18 @@ namespace CodeReleaseFormalizer {
         // Distinct, used for approver docs
         List<Tester> testers = new List<Tester>();
 
+        string initial_filepath;
         string filepath;
         string dept;
         string ppm_num;
         string cai_num;
+        string unparsedRelease;
         string release;
         string datetime;
         Form1 context;
 
         public GenResults(string filepath, string dept, string ppm_num, string cai_num, string datetime, Form1 context) {
+            initial_filepath = filepath;
             this.filepath = @filepath;
             this.dept = dept;
             this.ppm_num = ppm_num;
@@ -298,6 +286,34 @@ namespace CodeReleaseFormalizer {
         public string SetFilePath(string filepath) {
             this.filepath = @filepath;
             return this.filepath;
+        }
+
+        public string GetDept() {
+            return dept;
+        }
+
+        public string SetDept(string dept) {
+            SetRelease(release.Replace(this.dept, dept));
+            this.dept = dept;
+            return this.dept;
+        }
+
+        public string GetPPMnum() {
+            return ppm_num;
+        }
+
+        public string SetPPMnum(string ppm_num) {
+            this.ppm_num = ppm_num;
+            return this.ppm_num;
+        }
+
+        public string GetCAI_num() {
+            return cai_num;
+        }
+
+        public string SetCAInum(string cai_num) {
+            this.cai_num = cai_num;
+            return this.cai_num;
         }
 
         public string GetRelease() {
@@ -356,36 +372,41 @@ namespace CodeReleaseFormalizer {
                             }
                         }
                     }
+                    unparsedRelease = dt.Rows[1][4].ToString();
+                    NameDirToPose(isUAT);
+                }
+            }
+        }
 
-                    if (isUAT) {
-                            release = Regex.Replace(dt.Rows[1][4].ToString(), dept, "", RegexOptions.IgnoreCase);
-                        if (release.Contains(" >") || release.Contains(" -")) {
-                            Regex r = new Regex(@"(.*?)((?=\s>)|(?=\s-))");
-                            Match match = r.Match(release);
-                            if (release.ToCharArray()[0] == ' ') {
-                                release = dept + match.Value;
-                            }
-                            else {
-                                release = dept + " " + match.Value;
-                            }
-                        }
-                        else {
-                            if (release.ToCharArray()[0] == ' ') {
-                                release = dept + release;
-                            }
-                            else {
-                                release = dept + " " + release;
-                            }
-                        }
-
-                        Regex expr = new Regex(@"(C:.*)(?=Panaya Exported Steps.*\.xlsx)", RegexOptions.IgnoreCase);
-                        Match expr_match = expr.Match(filepath);
-                        filepath = expr_match.Value;
-                        filepath += "[" + datetime + "] " + @release + @"\";
-
-                        context.Pose_UAT_dir(filepath);
+        public void NameDirToPose(bool isUAT) {
+            if (isUAT) {
+                //release = Regex.Replace(unparsedRelease, dept, "", RegexOptions.IgnoreCase);
+                release = unparsedRelease;
+                if (release.Contains(" >") || release.Contains(" -")) {
+                    Regex r = new Regex(@"(.*?)((?=\s>)|(?=\s-))");
+                    Match match = r.Match(release);
+                    if (release.ToCharArray()[0] == ' ') {
+                        release = dept + match.Value;
+                    }
+                    else {
+                        release = dept + " " + match.Value;
                     }
                 }
+                else {
+                    if (release.ToCharArray()[0] == ' ') {
+                        release = dept + release;
+                    }
+                    else {
+                        release = dept + " " + release;
+                    }
+                }
+
+                Regex expr = new Regex(@"(C:.*)(?=Panaya Exported Steps.*\.xlsx)", RegexOptions.IgnoreCase);
+                Match expr_match = expr.Match(initial_filepath);
+                filepath = expr_match.Value;
+                filepath += "[" + datetime + "] " + @release + @"\";
+
+                context.Pose_UAT_dir(filepath);
             }
         }
 
@@ -395,7 +416,6 @@ namespace CodeReleaseFormalizer {
             for (int i = 0; i < testers.Count; i++) {
                 string fp1 = filepath;
                 fp1 += release + " (" + testers[i].GetTester() + " – Implementation Sign Off).docx";
-                Debug.WriteLine(release);
                 using (DocX document = DocX.Create(@fp1)) {
 
                     // Add document info
@@ -471,7 +491,6 @@ namespace CodeReleaseFormalizer {
             
             string fp = filepath;
             fp += release + " – Evidence.docx";
-            Debug.WriteLine(release);
             using (DocX document = DocX.Create(@fp)) {
 
                 // Add document info
