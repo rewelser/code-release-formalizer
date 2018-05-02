@@ -2,7 +2,7 @@
 
 #### Winforms application for automatically generating approval documents for HP PPM/CA Service Desk
 
-*Latest version: v1.0*
+*Latest version: v1.1*
 
 ![picture alt](screenshot.png "Form1 example")
 
